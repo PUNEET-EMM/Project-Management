@@ -46,17 +46,18 @@ export default function RoleManagement() {
 
   return (
     <Layout>
-      <div className="p-6">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-800 dark:text-white mb-2">
+      <div className="p-4 sm:p-6">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-white mb-2">
             Role Management
           </h1>
-          <p className="text-slate-600 dark:text-slate-400">
+          <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
             Manage user roles and permissions across the platform
           </p>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden">
+        {/* Desktop Table View */}
+        <div className="hidden lg:block bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-slate-50 dark:bg-slate-700">
@@ -131,18 +132,18 @@ export default function RoleManagement() {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         {editingUser === user.id ? (
                           <>
                             <button
                               onClick={() => handleRoleUpdate(user.id)}
-                              className="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition"
+                              className="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg transition whitespace-nowrap"
                             >
                               Save
                             </button>
                             <button
                               onClick={() => setEditingUser(null)}
-                              className="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-white text-sm rounded-lg transition"
+                              className="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-white text-sm rounded-lg transition whitespace-nowrap"
                             >
                               Cancel
                             </button>
@@ -154,14 +155,14 @@ export default function RoleManagement() {
                                 setEditingUser(user.id);
                                 setSelectedRole({ value: user.role, label: user.role });
                               }}
-                              className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition"
+                              className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition whitespace-nowrap"
                             >
                               Edit Role
                             </button>
                             {currentUser?.id !== user.id && (
                               <button
                                 onClick={() => handleImpersonate(user)}
-                                className="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded-lg transition flex items-center gap-1.5"
+                                className="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded-lg transition flex items-center gap-1.5 whitespace-nowrap"
                               >
                                 <UserCircle className="w-4 h-4" />
                                 Impersonate
@@ -176,6 +177,111 @@ export default function RoleManagement() {
               </tbody>
             </table>
           </div>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="lg:hidden space-y-4">
+          {users.map((user) => (
+            <div
+              key={user.id}
+              className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-4 sm:p-5"
+            >
+              {/* User Header */}
+              <div className="flex items-start gap-3 mb-4">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                  <User className="w-6 h-6 text-white" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-slate-800 dark:text-white text-lg">
+                    {user.name}
+                  </h3>
+                  <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 mt-1">
+                    <Mail className="w-3.5 h-3.5 flex-shrink-0" />
+                    <span className="truncate">{user.email}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Role Section */}
+              <div className="mb-4">
+                <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide mb-2 block">
+                  Role
+                </label>
+                {editingUser === user.id ? (
+                  <Select
+                    value={selectedRole}
+                    onChange={setSelectedRole}
+                    options={roleOptions}
+                    classNamePrefix="custom-select"
+                    className="custom-select-container"
+                    isSearchable={false}
+                    menuPlacement="auto"
+                  />
+                ) : (
+                  <span
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium ${roleColors[user.role]}`}
+                  >
+                    <Shield className="w-3.5 h-3.5" />
+                    {user.role}
+                  </span>
+                )}
+              </div>
+
+              {/* Projects Section */}
+              <div className="mb-4">
+                <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide mb-2 block">
+                  Assigned Projects
+                </label>
+                <div className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400">
+                  <FolderKanban className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                  <span className="break-words">
+                    {getUserProjectNames(user.assignedProjects) || 'None'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex flex-col sm:flex-row gap-2 pt-3 border-t border-slate-200 dark:border-slate-700">
+                {editingUser === user.id ? (
+                  <>
+                    <button
+                      onClick={() => handleRoleUpdate(user.id)}
+                      className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition"
+                    >
+                      Save Changes
+                    </button>
+                    <button
+                      onClick={() => setEditingUser(null)}
+                      className="flex-1 px-4 py-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-white text-sm font-medium rounded-lg transition"
+                    >
+                      Cancel
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => {
+                        setEditingUser(user.id);
+                        setSelectedRole({ value: user.role, label: user.role });
+                      }}
+                      className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition"
+                    >
+                      Edit Role
+                    </button>
+                    {currentUser?.id !== user.id && (
+                      <button
+                        onClick={() => handleImpersonate(user)}
+                        className="flex-1 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition flex items-center justify-center gap-2"
+                      >
+                        <UserCircle className="w-4 h-4" />
+                        Impersonate
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </Layout>

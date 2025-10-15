@@ -87,19 +87,23 @@ export default function TaskModal({ task, onClose, onSave, onDelete }) {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white dark:bg-slate-800 rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-700">
-          <h2 className="text-2xl font-bold text-slate-800 dark:text-white">
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-200 dark:border-slate-700 sticky top-0 bg-white dark:bg-slate-800 z-10">
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white">
             {task ? 'Edit Task' : 'New Task'}
           </h2>
           <button
             onClick={onClose}
             className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition"
+            aria-label="Close modal"
           >
             <X className="w-5 h-5 text-slate-600 dark:text-slate-400" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4">
+          {/* Task Title */}
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
               Task Title
@@ -109,10 +113,12 @@ export default function TaskModal({ task, onClose, onSave, onDelete }) {
               required
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
+              className="w-full px-3 sm:px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter task title"
             />
           </div>
 
+          {/* Description */}
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
               Description
@@ -122,10 +128,12 @@ export default function TaskModal({ task, onClose, onSave, onDelete }) {
               rows={3}
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
+              className="w-full px-3 sm:px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+              placeholder="Enter task description"
             />
           </div>
 
+          {/* Project */}
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
               Project
@@ -142,7 +150,8 @@ export default function TaskModal({ task, onClose, onSave, onDelete }) {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          {/* Status and Priority - Stack on mobile */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                 Status
@@ -172,6 +181,7 @@ export default function TaskModal({ task, onClose, onSave, onDelete }) {
             </div>
           </div>
 
+          {/* Due Date */}
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
               Due Date
@@ -181,10 +191,11 @@ export default function TaskModal({ task, onClose, onSave, onDelete }) {
               required
               value={formData.dueDate}
               onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
-              className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
+              className="w-full px-3 sm:px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
 
+          {/* Assign To */}
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
               Assign To
@@ -202,10 +213,11 @@ export default function TaskModal({ task, onClose, onSave, onDelete }) {
             />
           </div>
 
-          <div className="flex gap-3 pt-4">
+          {/* Action Buttons - Stack on mobile */}
+          <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
+              className="w-full sm:flex-1 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-medium"
             >
               {task ? 'Update Task' : 'Create Task'}
             </button>
@@ -217,7 +229,7 @@ export default function TaskModal({ task, onClose, onSave, onDelete }) {
                     onDelete(task.id);
                   }
                 }}
-                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition"
+                className="w-full sm:w-auto px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg transition font-medium"
               >
                 Delete
               </button>
@@ -225,7 +237,7 @@ export default function TaskModal({ task, onClose, onSave, onDelete }) {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-white rounded-lg transition"
+              className="w-full sm:flex-1 px-4 py-2.5 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-white rounded-lg transition font-medium"
             >
               Cancel
             </button>

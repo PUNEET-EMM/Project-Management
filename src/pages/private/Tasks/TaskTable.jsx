@@ -65,10 +65,11 @@ export default function TaskTable({ onEditTask }) {
 
   return (
     <div>
-      <div className="mb-4 flex gap-3">
-        <div className="flex items-center gap-2">
-          <Filter className="w-5 h-5 text-slate-600 dark:text-slate-400" />
-          <div className="w-48">
+      {/* Filters */}
+      <div className="mb-4 flex flex-col sm:flex-row gap-3">
+        <div className="flex items-center gap-2 flex-1">
+          <Filter className="w-5 h-5 text-slate-600 dark:text-slate-400 flex-shrink-0" />
+          <div className="flex-1 sm:flex-none sm:w-48">
             <Select
               value={statusFilter}
               onChange={setStatusFilter}
@@ -80,7 +81,7 @@ export default function TaskTable({ onEditTask }) {
           </div>
         </div>
 
-        <div className="w-48">
+        <div className="flex-1 sm:flex-none sm:w-48">
           <Select
             value={priorityFilter}
             onChange={setPriorityFilter}
@@ -92,7 +93,8 @@ export default function TaskTable({ onEditTask }) {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden">
+      {/* Desktop Table View */}
+      <div className="hidden lg:block bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-slate-50 dark:bg-slate-700">
@@ -143,7 +145,7 @@ export default function TaskTable({ onEditTask }) {
                   </td>
                   <td className="px-6 py-4">
                     <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      className={`inline-block px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
                         statusColors[task.status]
                       }`}
                     >
@@ -152,7 +154,7 @@ export default function TaskTable({ onEditTask }) {
                   </td>
                   <td className="px-6 py-4">
                     <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      className={`inline-block px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
                         priorityColors[task.priority]
                       }`}
                     >
@@ -161,12 +163,12 @@ export default function TaskTable({ onEditTask }) {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
-                      <User className="w-4 h-4" />
-                      {getAssigneeNames(task.assignedTo)}
+                      <User className="w-4 h-4 flex-shrink-0" />
+                      <span className="truncate">{getAssigneeNames(task.assignedTo)}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+                    <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 whitespace-nowrap">
                       <Calendar className="w-4 h-4" />
                       {new Date(task.dueDate).toLocaleDateString()}
                     </div>
@@ -174,7 +176,7 @@ export default function TaskTable({ onEditTask }) {
                   <td className="px-6 py-4">
                     <button
                       onClick={() => onEditTask(task)}
-                      className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-lg transition"
+                      className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-lg transition whitespace-nowrap"
                     >
                       <Edit2 className="w-4 h-4" />
                       Edit
@@ -186,6 +188,88 @@ export default function TaskTable({ onEditTask }) {
           </table>
         </div>
       </div>
+
+      {/* Mobile Card View */}
+      <div className="lg:hidden space-y-4">
+        {filteredTasks.map((task) => (
+          <div
+            key={task.id}
+            className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-4"
+          >
+            {/* Task Title & Description */}
+            <div className="mb-3">
+              <h3 className="font-semibold text-slate-800 dark:text-white text-lg mb-1">
+                {task.title}
+              </h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2">
+                {task.description}
+              </p>
+            </div>
+
+            {/* Project */}
+            <div className="mb-3">
+              <span className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase">
+                Project
+              </span>
+              <p className="text-sm text-slate-800 dark:text-white mt-1">
+                {getProjectName(task.projectId)}
+              </p>
+            </div>
+
+            {/* Status & Priority */}
+            <div className="flex flex-wrap gap-2 mb-3">
+              <span
+                className={`inline-block px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
+                  statusColors[task.status]
+                }`}
+              >
+                {task.status}
+              </span>
+              <span
+                className={`inline-block px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
+                  priorityColors[task.priority]
+                }`}
+              >
+                {task.priority}
+              </span>
+            </div>
+
+            {/* Assigned To */}
+            <div className="mb-3">
+              <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+                <User className="w-4 h-4 flex-shrink-0" />
+                <span className="break-words">{getAssigneeNames(task.assignedTo)}</span>
+              </div>
+            </div>
+
+            {/* Due Date */}
+            <div className="mb-4">
+              <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+                <Calendar className="w-4 h-4 flex-shrink-0" />
+                <span>Due: {new Date(task.dueDate).toLocaleDateString()}</span>
+              </div>
+            </div>
+
+            {/* Action Button */}
+            <button
+              onClick={() => onEditTask(task)}
+              className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-lg transition font-medium"
+            >
+              <Edit2 className="w-4 h-4" />
+              Edit Task
+            </button>
+          </div>
+        ))}
+      </div>
+
+      {/* Empty State */}
+      {filteredTasks.length === 0 && (
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8 text-center">
+          <p className="text-slate-600 dark:text-slate-400">
+            No tasks found matching your filters.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

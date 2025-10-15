@@ -5,12 +5,10 @@ export default function Layout({ children }) {
   return (
     <div className="h-screen flex flex-col bg-slate-50 dark:bg-slate-900">
       <Header />
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden relative">
         <Sidebar />
-        <main className="flex-1 overflow-auto">
-          <div className="p-4 sm:p-6 lg:p-8">
-            {children}
-          </div>
+        <main className="flex-1 overflow-auto w-full">
+          {children}
         </main>
       </div>
     </div>

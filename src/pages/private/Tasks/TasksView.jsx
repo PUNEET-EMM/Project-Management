@@ -43,73 +43,81 @@ export default function TasksView() {
   };
 
   return (
-            <Layout>
-    
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-800 dark:text-white mb-2">Tasks</h1>
-          <p className="text-slate-600 dark:text-slate-400">
-            Organize and track your team's work
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center bg-white dark:bg-slate-800 rounded-lg shadow p-1">
-            <button
-              onClick={() => dispatch(setView('kanban'))}
-              className={`p-2 rounded transition ${
-                currentView === 'kanban'
-                  ? 'bg-blue-600 text-white'
-                  : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
-              }`}
-            >
-              <LayoutGrid className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => dispatch(setView('table'))}
-              className={`p-2 rounded transition ${
-                currentView === 'table'
-                  ? 'bg-blue-600 text-white'
-                  : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
-              }`}
-            >
-              <List className="w-5 h-5" />
-            </button>
+    <Layout>
+      <div className="p-4 sm:p-6">
+        {/* Header Section */}
+        <div className="mb-6 sm:mb-8">
+          {/* Title and Description */}
+          <div className="mb-4">
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-white mb-2">
+              Tasks
+            </h1>
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
+              Organize and track your team's work
+            </p>
           </div>
-          {canManage && !readOnly && (
-            <button
-              onClick={() => {
-                setEditingTask(null);
-                setIsModalOpen(true);
-              }}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
-            >
-              <Plus className="w-5 h-5" />
-              New Task
-            </button>
-          )}
+
+          {/* Controls - Stack on mobile, side by side on larger screens */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            {/* View Toggle Buttons */}
+            <div className="flex items-center bg-white dark:bg-slate-800 rounded-lg shadow p-1 w-fit">
+              <button
+                onClick={() => dispatch(setView('kanban'))}
+                className={`p-2 rounded transition ${
+                  currentView === 'kanban'
+                    ? 'bg-blue-600 text-white'
+                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
+                }`}
+                aria-label="Kanban view"
+              >
+                <LayoutGrid className="w-5 h-5" />
+              </button>
+              <button
+                onClick={() => dispatch(setView('table'))}
+                className={`p-2 rounded transition ${
+                  currentView === 'table'
+                    ? 'bg-blue-600 text-white'
+                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
+                }`}
+                aria-label="Table view"
+              >
+                <List className="w-5 h-5" />
+              </button>
+            </div>
+
+            {canManage && !readOnly && (
+              <button
+                onClick={() => {
+                  setEditingTask(null);
+                  setIsModalOpen(true);
+                }}
+                className="flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-medium shadow-lg shadow-blue-500/20 w-full sm:w-auto"
+              >
+                <Plus className="w-5 h-5" />
+                New Task
+              </button>
+            )}
+          </div>
         </div>
+
+        {currentView === 'kanban' ? (
+          <KanbanBoard onEditTask={handleEditTask} />
+        ) : (
+          <TaskTable onEditTask={handleEditTask} />
+        )}
+
+        {isModalOpen && (
+          <TaskModal
+            task={editingTask}
+            onClose={() => {
+              setIsModalOpen(false);
+              setEditingTask(null);
+            }}
+            onSave={handleSaveTask}
+            onDelete={canManage ? handleDeleteTask : undefined}
+          />
+        )}
       </div>
-
-      {currentView === 'kanban' ? (
-        <KanbanBoard onEditTask={handleEditTask} />
-      ) : (
-        <TaskTable onEditTask={handleEditTask} />
-      )}
-
-      {isModalOpen && (
-        <TaskModal
-          task={editingTask}
-          onClose={() => {
-            setIsModalOpen(false);
-            setEditingTask(null);
-          }}
-          onSave={handleSaveTask}
-          onDelete={canManage ? handleDeleteTask : undefined}
-        />
-      )}
-    </div>
-            </Layout>
-    
+    </Layout>
   );
 }

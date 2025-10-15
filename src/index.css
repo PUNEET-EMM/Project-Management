@@ -80,3 +80,13 @@
   @apply dark:text-slate-500 dark:hover:text-slate-300;
   cursor: pointer;
 }
+
+
+* {
+  scrollbar-width: none; 
+  -ms-overflow-style: none; 
+}
+
+*::-webkit-scrollbar {
+  display: none; 
+}
