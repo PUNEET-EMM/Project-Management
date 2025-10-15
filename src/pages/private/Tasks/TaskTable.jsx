@@ -2,24 +2,41 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getUserTasks } from '../../../utils/permissions';
 import { Calendar, User, Filter, Edit2 } from 'lucide-react';
+import Select from 'react-select';
 
 export default function TaskTable({ onEditTask }) {
   const allTasks = useSelector((state) => state.tasks.tasks);
   const currentUser = useSelector((state) => state.auth.user);
   const users = useSelector((state) => state.users.users);
   const projects = useSelector((state) => state.projects.projects);
-  const [statusFilter, setStatusFilter] = useState('All');
-  const [priorityFilter, setPriorityFilter] = useState('All');
+  const [statusFilter, setStatusFilter] = useState({ value: 'All', label: 'All Status' });
+  const [priorityFilter, setPriorityFilter] = useState({ value: 'All', label: 'All Priorities' });
 
   if (!currentUser) return null;
 
   const userTasks = getUserTasks(currentUser, allTasks);
 
   const filteredTasks = userTasks.filter((task) => {
-    if (statusFilter !== 'All' && task.status !== statusFilter) return false;
-    if (priorityFilter !== 'All' && task.priority !== priorityFilter) return false;
+    if (statusFilter.value !== 'All' && task.status !== statusFilter.value) return false;
+    if (priorityFilter.value !== 'All' && task.priority !== priorityFilter.value) return false;
     return true;
   });
+
+  const statusOptions = [
+    { value: 'All', label: 'All Status' },
+    { value: 'To Do', label: 'To Do' },
+    { value: 'In Progress', label: 'In Progress' },
+    { value: 'Review', label: 'Review' },
+    { value: 'Done', label: 'Done' },
+  ];
+
+  const priorityOptions = [
+    { value: 'All', label: 'All Priorities' },
+    { value: 'Low', label: 'Low' },
+    { value: 'Medium', label: 'Medium' },
+    { value: 'High', label: 'High' },
+    { value: 'Critical', label: 'Critical' },
+  ];
 
   const statusColors = {
     'To Do': 'bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-200',
@@ -51,30 +68,28 @@ export default function TaskTable({ onEditTask }) {
       <div className="mb-4 flex gap-3">
         <div className="flex items-center gap-2">
           <Filter className="w-5 h-5 text-slate-600 dark:text-slate-400" />
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
-          >
-            <option value="All">All Status</option>
-            <option value="To Do">To Do</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Review">Review</option>
-            <option value="Done">Done</option>
-          </select>
+          <div className="w-48">
+            <Select
+              value={statusFilter}
+              onChange={setStatusFilter}
+              options={statusOptions}
+              classNamePrefix="custom-select"
+              className="custom-select-container"
+              isSearchable={false}
+            />
+          </div>
         </div>
 
-        <select
-          value={priorityFilter}
-          onChange={(e) => setPriorityFilter(e.target.value)}
-          className="px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
-        >
-          <option value="All">All Priorities</option>
-          <option value="Low">Low</option>
-          <option value="Medium">Medium</option>
-          <option value="High">High</option>
-          <option value="Critical">Critical</option>
-        </select>
+        <div className="w-48">
+          <Select
+            value={priorityFilter}
+            onChange={setPriorityFilter}
+            options={priorityOptions}
+            classNamePrefix="custom-select"
+            className="custom-select-container"
+            isSearchable={false}
+          />
+        </div>
       </div>
 
       <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden">

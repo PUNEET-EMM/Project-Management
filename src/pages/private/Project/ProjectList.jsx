@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addProject, updateProject, deleteProject } from '../../../store/slices/projectsSlice';
 import { canManageAllProjects, canManageProjects, isReadOnly, getUserProjects } from '../../../utils/permissions';
 import { Plus, Edit2, Trash2, Calendar, Users as UsersIcon, Filter } from 'lucide-react';
+import Select from 'react-select';
 import ProjectModal from './ProjectModal';
 import Layout from '../Layout/Layout';
 
@@ -13,7 +14,7 @@ export default function ProjectList() {
     const users = useSelector((state) => state.users.users);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingProject, setEditingProject] = useState(null);
-    const [statusFilter, setStatusFilter] = useState('All');
+    const [statusFilter, setStatusFilter] = useState({ value: 'All', label: 'All Status' });
 
     if (!currentUser) return null;
 
@@ -22,9 +23,9 @@ export default function ProjectList() {
         : getUserProjects(currentUser, allProjects);
 
     const filteredProjects =
-        statusFilter === 'All'
+        statusFilter.value === 'All'
             ? userProjects
-            : userProjects.filter((p) => p.status === statusFilter);
+            : userProjects.filter((p) => p.status === statusFilter.value);
 
     const statusColors = {
         Planning: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
@@ -32,6 +33,14 @@ export default function ProjectList() {
         'On Hold': 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
         Completed: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
     };
+
+    const statusOptions = [
+        { value: 'All', label: 'All Status' },
+        { value: 'Planning', label: 'Planning' },
+        { value: 'Active', label: 'Active' },
+        { value: 'On Hold', label: 'On Hold' },
+        { value: 'Completed', label: 'Completed' },
+    ];
 
     const canEdit = canManageProjects(currentUser.role);
     const readOnly = isReadOnly(currentUser.role);
@@ -68,7 +77,6 @@ export default function ProjectList() {
 
     return (
         <Layout>
-
             <div className="p-6">
                 <div className="flex items-center justify-between mb-8">
                     <div>
@@ -93,17 +101,16 @@ export default function ProjectList() {
 
                 <div className="mb-6 flex items-center gap-3">
                     <Filter className="w-5 h-5 text-slate-600 dark:text-slate-400" />
-                    <select
-                        value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)}
-                        className="px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
-                    >
-                        <option value="All">All Status</option>
-                        <option value="Planning">Planning</option>
-                        <option value="Active">Active</option>
-                        <option value="On Hold">On Hold</option>
-                        <option value="Completed">Completed</option>
-                    </select>
+                    <div className="w-64">
+                        <Select
+                            value={statusFilter}
+                            onChange={setStatusFilter}
+                            options={statusOptions}
+                            classNamePrefix="custom-select"
+                            className="custom-select-container"
+                            isSearchable={false}
+                        />
+                    </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -175,6 +182,5 @@ export default function ProjectList() {
                 )}
             </div>
         </Layout>
-
     );
 }

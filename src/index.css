@@ -2,69 +2,61 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 
-@layer base {
-  button,
-  [type='button'],
-  [type='submit'],
-  [type='reset'],
-  input,
-  textarea,
-  select {
-    @apply outline-none focus:outline-none focus:ring-0;
-    /* Remove ALL possible edge effects */
-    outline: none !important;
-    /* Remove any webkit/browser specific outlines */
-    -webkit-appearance: none !important;
-    -moz-appearance: none !important;
-    appearance: none !important;
-    /* Remove tap highlight on mobile */
-    -webkit-tap-highlight-color: transparent !important;
-  }
+/* React Select Custom Styles */
+.custom-select-container .custom-select__control {
+  @apply border-slate-300 bg-white rounded-lg px-2 py-1 cursor-pointer;
+  @apply dark:border-slate-600 dark:bg-slate-700;
+}
 
-  /* Target all possible focus/active states */
-  button:focus,
-  button:active,
-  button:focus-visible,
-  button:focus-within,
-  button:hover,
-  [type='button']:focus,
-  [type='button']:active,
-  [type='button']:focus-visible,
-  [type='button']:focus-within,
-  [type='button']:hover,
-  [type='submit']:focus,
-  [type='submit']:active,
-  [type='submit']:focus-visible,
-  [type='submit']:focus-within,
-  [type='submit']:hover,
-  [type='reset']:focus,
-  [type='reset']:active,
-  [type='reset']:focus-visible,
-  [type='reset']:focus-within,
-  [type='reset']:hover {
-    outline: none !important;
-    box-shadow: none !important;
-    -webkit-appearance: none !important;
-    -moz-appearance: none !important;
-    appearance: none !important;
-    -webkit-tap-highlight-color: transparent !important;
-  }
+.custom-select-container .custom-select__control:hover {
+  @apply border-slate-400 dark:border-slate-500;
+}
 
-  html,
-  body {
-    @apply font-sans bg-white;
-  }
+.custom-select-container .custom-select__control--is-focused {
+  @apply border-blue-500 shadow-sm;
+  @apply dark:border-blue-400;
+  box-shadow: 0 0 0 1px rgb(59 130 246 / 0.5);
+}
 
-  button {
-    cursor: pointer;
-    /* Remove any default styling */
-    background: none;
-    border: none;
-    padding: 0;
-    margin: 0;
-    /* Remove webkit button styling */
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-  }
+.custom-select-container .custom-select__menu {
+  @apply bg-white border border-slate-200 rounded-lg shadow-lg mt-1;
+  @apply dark:bg-slate-700 dark:border-slate-600;
+}
+
+.custom-select-container .custom-select__option {
+  @apply px-3 py-2 cursor-pointer;
+  @apply text-slate-900 dark:text-white;
+}
+
+.custom-select-container .custom-select__option:hover {
+  @apply bg-slate-100 dark:bg-slate-600;
+}
+
+.custom-select-container .custom-select__option--is-focused {
+  @apply bg-slate-100 dark:bg-slate-600;
+}
+
+.custom-select-container .custom-select__option--is-selected {
+  @apply bg-blue-600 text-white;
+  @apply dark:bg-blue-500;
+}
+
+.custom-select-container .custom-select__single-value {
+  @apply text-slate-900 dark:text-white;
+}
+
+.custom-select-container .custom-select__placeholder {
+  @apply text-slate-500 dark:text-slate-400;
+}
+
+.custom-select-container .custom-select__indicator-separator {
+  @apply bg-slate-300 dark:bg-slate-600;
+}
+
+.custom-select-container .custom-select__indicator {
+  @apply text-slate-400 dark:text-slate-500;
+}
+
+.custom-select-container .custom-select__indicator:hover {
+  @apply text-slate-600 dark:text-slate-300;
 }
