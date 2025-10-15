@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { X } from 'lucide-react';
+import Select from 'react-select';
 import { getUserProjects } from '../../../utils/permissions';
 
 export default function TaskModal({ task, onClose, onSave, onDelete }) {
@@ -10,20 +11,55 @@ export default function TaskModal({ task, onClose, onSave, onDelete }) {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    status: 'To Do',
-    priority: 'Medium',
-    projectId: '',
+    status: { value: 'To Do', label: 'To Do' },
+    priority: { value: 'Medium', label: 'Medium' },
+    projectId: null,
     assignedTo: [],
     dueDate: '',
   });
 
   const userProjects = currentUser ? getUserProjects(currentUser, allProjects) : [];
 
+  // Convert projects to options format
+  const projectOptions = userProjects.map((project) => ({
+    value: project.id,
+    label: project.name,
+  }));
+
+  const statusOptions = [
+    { value: 'To Do', label: 'To Do' },
+    { value: 'In Progress', label: 'In Progress' },
+    { value: 'Review', label: 'Review' },
+    { value: 'Done', label: 'Done' },
+  ];
+
+  const priorityOptions = [
+    { value: 'Low', label: 'Low' },
+    { value: 'Medium', label: 'Medium' },
+    { value: 'High', label: 'High' },
+    { value: 'Critical', label: 'Critical' },
+  ];
+
+  // Convert users to options format for multi-select
+  const userOptions = users.map((user) => ({
+    value: user.id,
+    label: user.name,
+  }));
+
   useEffect(() => {
     if (task) {
-      setFormData(task);
+      setFormData({
+        ...task,
+        status: { value: task.status, label: task.status },
+        priority: { value: task.priority, label: task.priority },
+        projectId: projectOptions.find((p) => p.value === task.projectId) || null,
+        assignedTo: userOptions.filter((u) => task.assignedTo.includes(u.value)),
+      });
     } else if (userProjects.length > 0) {
-      setFormData((prev) => ({ ...prev, projectId: userProjects[0].id }));
+      setFormData((prev) => ({
+        ...prev,
+        projectId: projectOptions[0],
+      }));
     }
   }, [task, userProjects.length]);
 
@@ -35,10 +71,10 @@ export default function TaskModal({ task, onClose, onSave, onDelete }) {
       id: task?.id || Date.now().toString(),
       title: formData.title || '',
       description: formData.description || '',
-      status: formData.status,
-      priority: formData.priority,
-      projectId: formData.projectId || '',
-      assignedTo: formData.assignedTo || [],
+      status: formData.status.value,
+      priority: formData.priority.value,
+      projectId: formData.projectId?.value || '',
+      assignedTo: formData.assignedTo.map((user) => user.value),
       dueDate: formData.dueDate || '',
       createdBy: task?.createdBy || currentUser.id,
       createdAt: task?.createdAt || new Date().toISOString(),
@@ -46,15 +82,6 @@ export default function TaskModal({ task, onClose, onSave, onDelete }) {
     };
 
     onSave(taskData);
-  };
-
-  const handleAssigneeToggle = (userId) => {
-    const assignedTo = formData.assignedTo || [];
-    if (assignedTo.includes(userId)) {
-      setFormData({ ...formData, assignedTo: assignedTo.filter((id) => id !== userId) });
-    } else {
-      setFormData({ ...formData, assignedTo: [...assignedTo, userId] });
-    }
   };
 
   return (
@@ -103,19 +130,16 @@ export default function TaskModal({ task, onClose, onSave, onDelete }) {
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
               Project
             </label>
-            <select
-              required
+            <Select
               value={formData.projectId}
-              onChange={(e) => setFormData({ ...formData, projectId: e.target.value })}
-              className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
-            >
-              <option value="">Select Project</option>
-              {userProjects.map((project) => (
-                <option key={project.id} value={project.id}>
-                  {project.name}
-                </option>
-              ))}
-            </select>
+              onChange={(selected) => setFormData({ ...formData, projectId: selected })}
+              options={projectOptions}
+              classNamePrefix="custom-select"
+              className="custom-select-container"
+              placeholder="Select Project"
+              isSearchable={true}
+              required
+            />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -123,32 +147,28 @@ export default function TaskModal({ task, onClose, onSave, onDelete }) {
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                 Status
               </label>
-              <select
+              <Select
                 value={formData.status}
-                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
-              >
-                <option value="To Do">To Do</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Review">Review</option>
-                <option value="Done">Done</option>
-              </select>
+                onChange={(selected) => setFormData({ ...formData, status: selected })}
+                options={statusOptions}
+                classNamePrefix="custom-select"
+                className="custom-select-container"
+                isSearchable={false}
+              />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                 Priority
               </label>
-              <select
+              <Select
                 value={formData.priority}
-                onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
-              >
-                <option value="Low">Low</option>
-                <option value="Medium">Medium</option>
-                <option value="High">High</option>
-                <option value="Critical">Critical</option>
-              </select>
+                onChange={(selected) => setFormData({ ...formData, priority: selected })}
+                options={priorityOptions}
+                classNamePrefix="custom-select"
+                className="custom-select-container"
+                isSearchable={false}
+              />
             </div>
           </div>
 
@@ -169,22 +189,17 @@ export default function TaskModal({ task, onClose, onSave, onDelete }) {
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
               Assign To
             </label>
-            <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 border border-slate-300 dark:border-slate-600 rounded-lg">
-              {users.map((user) => (
-                <label
-                  key={user.id}
-                  className="flex items-center gap-2 p-2 hover:bg-slate-50 dark:hover:bg-slate-700 rounded cursor-pointer"
-                >
-                  <input
-                    type="checkbox"
-                    checked={formData.assignedTo?.includes(user.id)}
-                    onChange={() => handleAssigneeToggle(user.id)}
-                    className="w-4 h-4 text-blue-600"
-                  />
-                  <span className="text-sm text-slate-800 dark:text-white">{user.name}</span>
-                </label>
-              ))}
-            </div>
+            <Select
+              value={formData.assignedTo}
+              onChange={(selected) => setFormData({ ...formData, assignedTo: selected || [] })}
+              options={userOptions}
+              classNamePrefix="custom-select"
+              className="custom-select-container"
+              placeholder="Select users..."
+              isSearchable={true}
+              isMulti
+              closeMenuOnSelect={false}
+            />
           </div>
 
           <div className="flex gap-3 pt-4">

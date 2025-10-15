@@ -60,3 +60,23 @@
 .custom-select-container .custom-select__indicator:hover {
   @apply text-slate-600 dark:text-slate-300;
 }
+
+
+.custom-select-container .custom-select__multi-value {
+  @apply bg-blue-100 dark:bg-blue-900/50 rounded;
+}
+
+.custom-select-container .custom-select__multi-value__label {
+  @apply text-blue-800 dark:text-blue-200 text-sm px-1;
+}
+
+.custom-select-container .custom-select__multi-value__remove {
+  @apply text-blue-600 hover:bg-blue-200 hover:text-blue-800 rounded;
+  @apply dark:text-blue-300 dark:hover:bg-blue-800 dark:hover:text-blue-100;
+}
+
+.custom-select-container .custom-select__clear-indicator {
+  @apply text-slate-400 hover:text-slate-600;
+  @apply dark:text-slate-500 dark:hover:text-slate-300;
+  cursor: pointer;
+}
