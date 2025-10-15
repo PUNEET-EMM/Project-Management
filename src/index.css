@@ -1,0 +1,70 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+
+@layer base {
+  button,
+  [type='button'],
+  [type='submit'],
+  [type='reset'],
+  input,
+  textarea,
+  select {
+    @apply outline-none focus:outline-none focus:ring-0;
+    /* Remove ALL possible edge effects */
+    outline: none !important;
+    /* Remove any webkit/browser specific outlines */
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    /* Remove tap highlight on mobile */
+    -webkit-tap-highlight-color: transparent !important;
+  }
+
+  /* Target all possible focus/active states */
+  button:focus,
+  button:active,
+  button:focus-visible,
+  button:focus-within,
+  button:hover,
+  [type='button']:focus,
+  [type='button']:active,
+  [type='button']:focus-visible,
+  [type='button']:focus-within,
+  [type='button']:hover,
+  [type='submit']:focus,
+  [type='submit']:active,
+  [type='submit']:focus-visible,
+  [type='submit']:focus-within,
+  [type='submit']:hover,
+  [type='reset']:focus,
+  [type='reset']:active,
+  [type='reset']:focus-visible,
+  [type='reset']:focus-within,
+  [type='reset']:hover {
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+
+  html,
+  body {
+    @apply font-sans bg-white;
+  }
+
+  button {
+    cursor: pointer;
+    /* Remove any default styling */
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    /* Remove webkit button styling */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+}
