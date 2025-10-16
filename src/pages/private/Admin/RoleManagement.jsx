@@ -179,14 +179,12 @@ export default function RoleManagement() {
           </div>
         </div>
 
-        {/* Mobile Card View */}
         <div className="lg:hidden space-y-4">
           {users.map((user) => (
             <div
               key={user.id}
               className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-4 sm:p-5"
             >
-              {/* User Header */}
               <div className="flex items-start gap-3 mb-4">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
                   <User className="w-6 h-6 text-white" />
@@ -202,7 +200,6 @@ export default function RoleManagement() {
                 </div>
               </div>
 
-              {/* Role Section */}
               <div className="mb-4">
                 <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide mb-2 block">
                   Role
@@ -227,7 +224,6 @@ export default function RoleManagement() {
                 )}
               </div>
 
-              {/* Projects Section */}
               <div className="mb-4">
                 <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide mb-2 block">
                   Assigned Projects
@@ -240,7 +236,6 @@ export default function RoleManagement() {
                 </div>
               </div>
 
-              {/* Actions */}
               <div className="flex flex-col sm:flex-row gap-2 pt-3 border-t border-slate-200 dark:border-slate-700">
                 {editingUser === user.id ? (
                   <>

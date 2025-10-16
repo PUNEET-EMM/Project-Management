@@ -1,7 +1,6 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-// Custom hook to check authentication from Redux store
 const useIsAuthenticated = () => {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   return isAuthenticated && user !== null;
